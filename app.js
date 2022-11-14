@@ -30,20 +30,19 @@ app.post('/users', (req, res) => {
     res.status(201).json('Created!');
 
     fs.readdir('./users', (err, files) => {
-        console.log(files);
             for (const file of files) {
-                console.log(file);
                 fs.readFile(`./users/${file}`, (err, data) => {
-                    console.log(data.);
-                })
+                    const parsedData = JSON.parse(data);
+                    console.log(parsedData);
+                });
             }
-        })
+        });
 });
 
 app.put('/users', (req, res) => {
 
 
-})
+});
 
 app.patch('/users', (req, res) => {
 
