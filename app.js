@@ -2,7 +2,6 @@ const express = require('express');
 const fs = require('fs');
 
 const userDB = require('./users/users.json');
-const e = require("express");
 
 const app = express();
 
@@ -13,28 +12,17 @@ app.listen(5000, () => {
     console.log('Server listen 5000');
 });
 
-app.get('/users', (req, res) => {
-    res.json(userDB);
+app.get('/users', async (req, res) => {
+        res.json(userDB);
 });
 
-app.get('/users/:userId', (req, res) => {
-
-    const {userId} = req.params;
-    if(userDB[userId - 1]){
-        res.json(userDB[userId - 1]);
-    } else {
-        res.status(412).json("This user doesn't exist")
-    }
-
-
-});
 
 app.post('/users', (req, res) => {
 
     const userInfo = req.body;
     console.log(userInfo);
 
-    if(userInfo.name && userInfo.age){
+    if(userInfo.name && userInfo.age < 0){
         if(isNaN(userInfo.age)){
             res.status(412).json('Age must be a number')
         } else {
@@ -57,9 +45,9 @@ app.post('/users', (req, res) => {
 
                         fs.writeFile(`./users/${file}`, JSON.stringify(parsedData), (err) => {
                             if (err === null) {
-                                console.log("It works!");
+                                return console.log("It works!");
                             } else {
-                                console.log(err);
+                                return console.log(err);
                             }
                         });
 
@@ -68,8 +56,20 @@ app.post('/users', (req, res) => {
             });
         }
     } else {
-        res.status(412).json("Name or age doesn't exist")
+        return res.status(404).json("Name or age doesn't exist")
     }
+
+});
+
+app.get('/users/:userId', (req, res) => {
+
+    const {userId} = req.params;
+    if(userDB[userId - 1]){
+        res.json(userDB[userId - 1]);
+    } else {
+        return res.status(404).json("This user doesn't exist")
+    }
+
 
 });
 
@@ -79,7 +79,7 @@ app.put('/users/:userId', (req, res) => {
     const userForUpdate = {id: null, name: `${newUserInfo.name}`, age: newUserInfo.age};
     const { userId } = req.params;
 
-    if(newUserInfo.name && newUserInfo.age){
+    if(newUserInfo.name && newUserInfo.age < 0){
         if(isNaN(newUserInfo.age)){
 
             res.status(412).json('Age must be a number')
@@ -102,9 +102,9 @@ app.put('/users/:userId', (req, res) => {
 
                         fs.writeFile(`./users/${file}`, JSON.stringify(parsedData), (err) => {
                             if (err === null) {
-                                console.log("It works!");
+                                return console.log("It works!");
                             } else {
-                                console.log(err);
+                                return console.log(err);
                             }
                         });
 
@@ -112,15 +112,14 @@ app.put('/users/:userId', (req, res) => {
                 }
             });
 
-                res.json('Updated')
+                res.status(201).json('Updated');
 
             } else {
-
-                res.status(412).json("This user doesn't exist");
+                return res.status(404).json("This user doesn't exist");
             }
 
     } else {
-        res.status(412).json("Name or age doesn't exist")
+        return res.status(404).json("Name or age doesn't exist");
     }
 
 
@@ -140,7 +139,7 @@ app.delete('/users/:userId', (req, res) => {
                     const newData = [];
                     let newId = 1;
                     for (const item of parsedData) {
-                        if(item.id - 1 !== userId - 1){
+                        if(item.id !== +userId){
                             item.id = newId;
                             newId++;
                             newData.push(item);
@@ -155,7 +154,7 @@ app.delete('/users/:userId', (req, res) => {
                         if (err === null) {
                             console.log("It works!");
                         } else {
-                            console.log(err);
+                            return console.log(err);
                         }
                     });
 
@@ -163,9 +162,9 @@ app.delete('/users/:userId', (req, res) => {
             }
         });
 
-        res.json('Deleted!');
+        res.status(204).json('Deleted!');
     } else {
-        res.status(412).json("This user doesn't exist")
+       return res.status(404).json("This user doesn't exist")
     }
 
 });
