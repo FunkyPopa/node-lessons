@@ -26,6 +26,8 @@ module.exports = {
             const userInfo = req.body;
             console.log(userInfo);
 
+            const newUser = {id: null, name: `${userInfo.name}`, age: userInfo.age};
+
             fs.readdir('./users', (err, files) => {
                 for (const file of files) {
                     fs.readFile(`./users/${file}`, (err, data) => {
@@ -33,8 +35,6 @@ module.exports = {
                         parsedData.push(newUser);
 
                         let newId = 1;
-                        const newUser = {id: null, name: `${userInfo.name}`, age: userInfo.age};
-
                         for (const item of parsedData) {
                             item.id = newId;
                             newId++;
@@ -60,61 +60,51 @@ module.exports = {
     },
 
     update: async (req, res, next) => {
+        try {
+            const newUserInfo  = req.body;
+            const userForUpdate = {id: null, name: `${newUserInfo.name}`, age: newUserInfo.age};
+            const { userId } = req.params;
 
-        const newUserInfo  = req.body;
-        const userForUpdate = {id: null, name: `${newUserInfo.name}`, age: newUserInfo.age};
-        const { userId } = req.params;
 
-        if(newUserInfo.name && newUserInfo.age > 0){
-            if(isNaN(newUserInfo.age)){
+            fs.readdir('./users', (err, files) => {
+                for (const file of files) {
+                    fs.readFile(`./users/${file}`, (err, data) => {
+                        const parsedData = JSON.parse(data);
+                        console.log(parsedData);
 
-                await res.status(412).json('Age must be a number')
+                        parsedData[userId - 1] = userForUpdate;
 
-            } else if(userDB[userId - 1]){
+                        let newId = 1;
+                        for (const item of parsedData) {
+                            item.id = newId;
+                            newId++;
+                        }
 
-                fs.readdir('./users', (err, files) => {
-                    for (const file of files) {
-                        fs.readFile(`./users/${file}`, (err, data) => {
-                            const parsedData = JSON.parse(data);
-                            console.log(parsedData);
-
-                            parsedData[userId - 1] = userForUpdate;
-
-                            let newId = 1;
-                            for (const item of parsedData) {
-                                item.id = newId;
-                                newId++;
+                        fs.writeFile(`./users/${file}`, JSON.stringify(parsedData), (err) => {
+                            if (err === null) {
+                                console.log("It works!");
+                            } else {
+                                console.log(err);
                             }
-
-                            fs.writeFile(`./users/${file}`, JSON.stringify(parsedData), (err) => {
-                                if (err === null) {
-                                    console.log("It works!");
-                                } else {
-                                    console.log(err);
-                                }
-                            });
-
                         });
-                    }
-                });
 
-                await res.status(201).json('Updated');
+                    });
+                }
+            });
 
-            } else {
-                await res.status(404).json("This user doesn't exist");
-            }
-
-        } else {
-            await res.status(400).json("Name or age is invalid");
+            await res.status(201).json('Updated');
+        } catch (e) {
+            next(e);
         }
+
+
 
     },
 
     deleteById: async (req, res, next) => {
+        try {
+            const { userId } = req.params;
 
-        const { userId } = req.params;
-        if(userDB[userId - 1]){
-            await res.status(200).json('Deleted!');
             fs.readdir('./users', (err, files) => {
                 for (const file of files) {
                     fs.readFile(`./users/${file}`, (err, data) => {
@@ -145,10 +135,11 @@ module.exports = {
                     });
                 }
             });
-        } else {
-            await res.status(404).json("This user doesn't exist");
+
+            await res.status(200).json('Deleted!');
+        } catch (e) {
+            next(e);
         }
 
     }
-
 };

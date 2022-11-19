@@ -10,9 +10,9 @@ router.post('/', middleware.checkIsDataCorrect, controller.create);
 
 router.get('/:userId', middleware.checkIsUserExist, controller.getById);
 
-router.put('/:userId', controller.update);
+router.put('/:userId',middleware.checkIsUserExist, middleware.checkIsDataCorrect, controller.update);
 
-router.delete('/:userId', controller.deleteById);
+router.delete('/:userId', middleware.checkIsUserExist, controller.deleteById);
 
 
 module.exports = router;

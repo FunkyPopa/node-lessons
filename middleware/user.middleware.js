@@ -1,13 +1,14 @@
 const userDB = require("../users/users.json");
+const CustomError = require("../error/CustomError");
 
 module.exports = {
-    checkIsUserExist: async (req, res, next) => {
+    checkIsUserExist: (req, res, next) => {
         try {
             const {userId} = req.params;
             const user = userDB[userId - 1];
 
             if (!user) {
-                throw new Error('User does not exist');
+                throw new CustomError('User does not exist', 404);
             }
 
             req.user = user;
@@ -18,19 +19,21 @@ module.exports = {
         }
 
     },
-    checkIsDataCorrect: async (req, res, next) => {
+    checkIsDataCorrect: (req, res, next) => {
         try {
             const userInfo = req.body;
 
             if(typeof userInfo.name === typeof 'str' && userInfo.age > 0) {
-                if (isNaN(userInfo.age)) {
-                    throw new Error('Age must be a number');
+                if (typeof userInfo.age !== typeof 1) {
+                    throw new CustomError('Age must be a number', 400);
                 } else {
-                    req.data = userInfo
+                    req.data = userInfo;
+                    next();
                 }
             } else {
-                throw new Error('Name or Age is invalid');
+                throw new CustomError('Name or age is invalid', 400);
             }
+
         } catch (e) {
             next(e);
         }
