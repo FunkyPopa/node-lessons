@@ -22,11 +22,11 @@ app.post('/users', async (req, res) => {
     const userInfo = req.body;
     console.log(userInfo);
 
-    if(userInfo.name && userInfo.age < 0){
+   if(userInfo.name && userInfo.age > 0){
         if(isNaN(userInfo.age)){
-           await res.status(412).json('Age must be a number')
+          await res.status(412).json('Age must be a number')
         } else {
-            await res.status(201).json('Created!');
+          await res.status(201).json('Created!');
 
             let newId = 1;
             const newUser = {id: null, name: `${userInfo.name}`, age: userInfo.age}
@@ -56,7 +56,7 @@ app.post('/users', async (req, res) => {
             });
         }
     } else {
-        await res.status(404).json("Name or age doesn't exist");
+       await res.status(400).json("Name or age is invalid");
     }
 
 });
@@ -79,7 +79,7 @@ app.put('/users/:userId', async (req, res) => {
     const userForUpdate = {id: null, name: `${newUserInfo.name}`, age: newUserInfo.age};
     const { userId } = req.params;
 
-    if(newUserInfo.name && newUserInfo.age < 0){
+    if(newUserInfo.name && newUserInfo.age > 0){
         if(isNaN(newUserInfo.age)){
 
             await res.status(412).json('Age must be a number')
@@ -119,18 +119,17 @@ app.put('/users/:userId', async (req, res) => {
             }
 
     } else {
-        await res.status(404).json("Name or age doesn't exist");
+        await res.status(400).json("Name or age is invalid");
     }
-
-
 
 });
 
-app.delete('/users/:userId', async (req, res) => {
+
+app.delete('/users/:userId',  async (req, res) => {
 
     const { userId } = req.params;
     if(userDB[userId - 1]){
-
+        await res.status(200).json('Deleted!');
         fs.readdir('./users', (err, files) => {
             for (const file of files) {
                 fs.readFile(`./users/${file}`, (err, data) => {
@@ -144,7 +143,7 @@ app.delete('/users/:userId', async (req, res) => {
                             newId++;
                             newData.push(item);
                         } else {
-                            console.log(item)
+                            console.log(item);
                         }
 
                     }
@@ -161,10 +160,8 @@ app.delete('/users/:userId', async (req, res) => {
                 });
             }
         });
-
-        await res.status(204).json('Deleted!');
     } else {
-        await res.status(404).json("This user doesn't exist");
+       await res.status(404).json("This user doesn't exist");
     }
 
 });
