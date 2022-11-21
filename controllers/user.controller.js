@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const userDB = require("../users/users.json");
+const userDB = require("../DB/users/users.json");
 
 module.exports = {
 
@@ -28,9 +28,9 @@ module.exports = {
 
             const newUser = {id: null, name: `${userInfo.name}`, age: userInfo.age};
 
-            fs.readdir('./users', (err, files) => {
+            fs.readdir('./DB/users', (err, files) => {
                 for (const file of files) {
-                    fs.readFile(`./users/${file}`, (err, data) => {
+                    fs.readFile(`./DB/users/${file}`, (err, data) => {
                         const parsedData = JSON.parse(data);
                         parsedData.push(newUser);
 
@@ -41,7 +41,7 @@ module.exports = {
                         }
                         console.log(parsedData);
 
-                        fs.writeFile(`./users/${file}`, JSON.stringify(parsedData), (err) => {
+                        fs.writeFile(`./DB/users/${file}`, JSON.stringify(parsedData), (err) => {
                             if (err === null) {
                                 console.log("It works!");
                             } else {
@@ -66,9 +66,9 @@ module.exports = {
             const { userId } = req.params;
 
 
-            fs.readdir('./users', (err, files) => {
+            fs.readdir('./DB/users', (err, files) => {
                 for (const file of files) {
-                    fs.readFile(`./users/${file}`, (err, data) => {
+                    fs.readFile(`./DB/users/${file}`, (err, data) => {
                         const parsedData = JSON.parse(data);
                         console.log(parsedData);
 
@@ -80,7 +80,7 @@ module.exports = {
                             newId++;
                         }
 
-                        fs.writeFile(`./users/${file}`, JSON.stringify(parsedData), (err) => {
+                        fs.writeFile(`./DB/users/${file}`, JSON.stringify(parsedData), (err) => {
                             if (err === null) {
                                 console.log("It works!");
                             } else {
@@ -105,9 +105,9 @@ module.exports = {
         try {
             const { userId } = req.params;
 
-            fs.readdir('./users', (err, files) => {
+            fs.readdir('./DB/users', (err, files) => {
                 for (const file of files) {
-                    fs.readFile(`./users/${file}`, (err, data) => {
+                    fs.readFile(`./DB/users/${file}`, (err, data) => {
                         const parsedData = JSON.parse(data);
 
                         const newData = [];
@@ -124,7 +124,7 @@ module.exports = {
                         }
                         console.log(newData)
 
-                        fs.writeFile(`./users/${file}`, JSON.stringify(newData), (err) => {
+                        fs.writeFile(`./DB/users/${file}`, JSON.stringify(newData), (err) => {
                             if (err === null) {
                                 console.log("It works!");
                             } else {

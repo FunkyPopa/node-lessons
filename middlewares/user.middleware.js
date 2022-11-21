@@ -1,4 +1,4 @@
-const userDB = require("../users/users.json");
+const userDB = require("../DB/users/users.json");
 const CustomError = require("../error/CustomError");
 
 module.exports = {
