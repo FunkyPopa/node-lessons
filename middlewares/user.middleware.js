@@ -23,8 +23,8 @@ module.exports = {
         try {
             const userInfo = req.body;
 
-            if(typeof userInfo.name === typeof 'str' && userInfo.age > 0) {
-                if (typeof userInfo.age !== typeof 1) {
+            if(typeof userInfo.name === typeof String && userInfo.age > 0) {
+                if (typeof userInfo.age !== typeof Number) {
                     throw new CustomError('Age must be a number', 400);
                 } else {
                     req.data = userInfo;
