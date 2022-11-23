@@ -1,12 +1,12 @@
-const fs = require("fs");
-
-const userDB = require("../DB/users/users.json");
+const {userService} = require("../services");
 
 module.exports = {
 
     getAll: async (req, res, next) => {
         try {
-            await res.json(userDB);
+            const users = await userService.findByParams();
+
+            res.json(users);
         } catch (e) {
             next(e);
         }
@@ -15,7 +15,7 @@ module.exports = {
 
     getById: async (req, res, next) => {
         try {
-            await res.json(req.user);
+            res.json(req.user);
         } catch (e) {
             next(e);
         }
@@ -23,37 +23,9 @@ module.exports = {
 
     create: async (req, res, next) => {
         try {
-            const userInfo = req.body;
-            console.log(userInfo);
+           const user = await userService.create(req.body);
 
-            const newUser = {id: null, name: `${userInfo.name}`, age: userInfo.age};
-
-            fs.readdir('./DB/users', (err, files) => {
-                for (const file of files) {
-                    fs.readFile(`./DB/users/${file}`, (err, data) => {
-                        const parsedData = JSON.parse(data);
-                        parsedData.push(newUser);
-
-                        let newId = 1;
-                        for (const item of parsedData) {
-                            item.id = newId;
-                            newId++;
-                        }
-                        console.log(parsedData);
-
-                        fs.writeFile(`./DB/users/${file}`, JSON.stringify(parsedData), (err) => {
-                            if (err === null) {
-                                console.log("It works!");
-                            } else {
-                                console.log(err);
-                            }
-                        });
-
-                    });
-                }
-            });
-
-            await res.status(201).json('Created!');
+            res.status(201).json(user);
         } catch (e) {
             next(e);
         }
@@ -62,37 +34,11 @@ module.exports = {
     update: async (req, res, next) => {
         try {
             const newUserInfo  = req.body;
-            const userForUpdate = {id: null, name: `${newUserInfo.name}`, age: newUserInfo.age};
             const { userId } = req.params;
 
+            await userService.updateById(userId, newUserInfo);
 
-            fs.readdir('./DB/users', (err, files) => {
-                for (const file of files) {
-                    fs.readFile(`./DB/users/${file}`, (err, data) => {
-                        const parsedData = JSON.parse(data);
-                        console.log(parsedData);
-
-                        parsedData[userId - 1] = userForUpdate;
-
-                        let newId = 1;
-                        for (const item of parsedData) {
-                            item.id = newId;
-                            newId++;
-                        }
-
-                        fs.writeFile(`./DB/users/${file}`, JSON.stringify(parsedData), (err) => {
-                            if (err === null) {
-                                console.log("It works!");
-                            } else {
-                                console.log(err);
-                            }
-                        });
-
-                    });
-                }
-            });
-
-            await res.status(201).json('Updated');
+            res.status(201).json('Updated');
         } catch (e) {
             next(e);
         }
@@ -103,40 +49,9 @@ module.exports = {
 
     deleteById: async (req, res, next) => {
         try {
-            const { userId } = req.params;
+            await userService.deleteById(req.params.userId);
 
-            fs.readdir('./DB/users', (err, files) => {
-                for (const file of files) {
-                    fs.readFile(`./DB/users/${file}`, (err, data) => {
-                        const parsedData = JSON.parse(data);
-
-                        const newData = [];
-                        let newId = 1;
-                        for (const item of parsedData) {
-                            if(item.id !== +userId){
-                                item.id = newId;
-                                newId++;
-                                newData.push(item);
-                            } else {
-                                console.log(item);
-                            }
-
-                        }
-                        console.log(newData)
-
-                        fs.writeFile(`./DB/users/${file}`, JSON.stringify(newData), (err) => {
-                            if (err === null) {
-                                console.log("It works!");
-                            } else {
-                                console.log(err);
-                            }
-                        });
-
-                    });
-                }
-            });
-
-            await res.status(200).json('Deleted!');
+            res.status(200).json('Deleted!');
         } catch (e) {
             next(e);
         }

@@ -6,11 +6,11 @@ const middleware = require("../middlewares/user.middleware");
 
 router.get('/', controller.getAll);
 
-router.post('/', middleware.checkIsDataCorrect, controller.create);
+router.post('/', middleware.checkIsBodyValid, middleware.checkIsEmailUnique, middleware.userNormalizator, controller.create);
 
 router.get('/:userId', middleware.checkIsUserExist, controller.getById);
 
-router.put('/:userId',middleware.checkIsUserExist, middleware.checkIsDataCorrect, controller.update);
+router.put('/:userId',middleware.checkIsUserExist, middleware.checkIsBodyValid, middleware.userNormalizator, controller.update);
 
 router.delete('/:userId', middleware.checkIsUserExist, controller.deleteById);
 
