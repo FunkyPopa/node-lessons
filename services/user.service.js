@@ -1,5 +1,6 @@
 const User = require("../dataBase/User");
 
+
 module.exports = {
     findByParams: async (filter = {}) => {
         return User.find(filter);
@@ -8,6 +9,10 @@ module.exports = {
     findOneByParams: async (filter = {}) => {
         return User.findOne(filter);
     },
+
+    // getUserDynamically: async (filter = {})  => {
+    //     await User.findOne({ [dbField]: filter});
+    // },
 
     create: async (userInfo) => {
         return User.create(userInfo);

@@ -1,11 +1,22 @@
 {
   "name": "node_lessons",
   "version": "1.0",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "hello": "echo \"Hello!\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FunkyPopa/node-lessons"
+  },
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "joi": "^17.7.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
+    "nodemon": "^2.0.20",
     "router": "^1.3.7"
   }
 }

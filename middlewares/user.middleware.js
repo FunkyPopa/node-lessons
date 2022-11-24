@@ -4,24 +4,27 @@ const {userService} = require("../services");
 const userValidator = require('../validators/user.validator');
 const commonValidator = require('../validators/common.validators');
 
-module.exports = {
-    checkIsUserExist: async (req, res, next) => {
-        try {
-            const { userId } = req.params;
+const User = require("../dataBase/User");
 
-            const user = await userService.findOneByParams({ _id: userId });
+module.exports = {
+
+    getUserDynamically: (fieldName, from = 'body', dbField = fieldName) => async (req, res, next) => {
+        try {
+            const fieldToSearch = req[from][fieldName];
+
+            // const user = userService.getUserDynamically({ [dbField]: fieldToSearch })
+            const user = await User.findOne({ [dbField]: fieldToSearch });
 
             if (!user) {
-                throw new CustomError('User does not exist', 404);
+                throw new CustomError('User not found', 404);
             }
 
-            req.user = user;
+            req.user = user
 
             next();
         } catch (e) {
             next(e);
         }
-
     },
 
     checkIsEmailUnique: async (req, res, next) => {
@@ -66,7 +69,7 @@ module.exports = {
         }
     },
 
-    isNewUserValid: async (req, res, next) => {
+    isEditUserValid: async (req, res, next) => {
       try {
 
         const validate = userValidator.newUserValidator.validate(req.body);
@@ -81,6 +84,24 @@ module.exports = {
       } catch (e) {
           next(e);
       }
+
+    },
+
+    isNewUserValid: async (req, res, next) => {
+        try {
+
+            const validate = userValidator.newUserValidator.validate(req.body);
+
+            if (validate.error) {
+                throw new CustomError(validate.error.message, 400);
+            }
+
+            req.body = validate.value;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
 
     },
 
