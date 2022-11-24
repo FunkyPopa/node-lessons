@@ -1,12 +1,13 @@
-const {carService, userService} = require("../services");
+const {carService} = require("../services");
 
 module.exports = {
 
     getAll: async (req, res, next) => {
         try {
             const cars = carService.findByParams();
+            console.log(cars);
 
-            await res.json(cars);
+            res.json(cars);
         } catch (e) {
             next(e);
         }
@@ -42,8 +43,6 @@ module.exports = {
         } catch (e) {
             next(e);
         }
-
-
 
     },
 

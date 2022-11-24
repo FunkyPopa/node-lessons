@@ -1,12 +1,13 @@
 const CustomError = require("../error/CustomError");
 const {carService} = require("../services");
-const {userNormalizator, carNormalizator} = require("../helper");
+const {carNormalizator} = require("../helper");
 
 module.exports = {
     checkIsUserExist: (req, res, next) => {
         try {
             const { carId } = req.params;
-            const car = carService.findByParams({ _id: carId });
+
+            const car = carService.findOneByParams({ _id: carId });
 
             if (!car) {
                 throw new CustomError('Car does not exist', 404);
@@ -46,7 +47,7 @@ module.exports = {
 
     carNormalizator: (req, res, next) => {
 
-        let { model, year, price } = req.body;
+        let { model } = req.body;
 
         req.body.module = carNormalizator.model(model);
 

@@ -1,13 +1,15 @@
 const CustomError = require("../error/CustomError");
 const {userNormalizator} = require("../helper");
 const {userService} = require("../services");
+const userValidator = require('../validators/user.validator');
+const commonValidator = require('../validators/common.validators');
 
 module.exports = {
     checkIsUserExist: async (req, res, next) => {
         try {
             const { userId } = req.params;
 
-            const user = await userService.findByParams({ _id: userId });
+            const user = await userService.findOneByParams({ _id: userId });
 
             if (!user) {
                 throw new CustomError('User does not exist', 404);
@@ -42,7 +44,7 @@ module.exports = {
       }
     },
 
-    checkIsBodyValid: (req, res, next) => {
+    checkIsBodyValid: async (req, res, next) => {
         try {
             const {name, email, password} = req.body;
 
@@ -62,6 +64,42 @@ module.exports = {
         } catch (e) {
             next(e);
         }
+    },
+
+    isNewUserValid: async (req, res, next) => {
+      try {
+
+        const validate = userValidator.newUserValidator.validate(req.body);
+
+        if (validate.error) {
+            throw new CustomError(validate.error.message, 400);
+        }
+
+        req.body = validate.value;
+
+          next();
+      } catch (e) {
+          next(e);
+      }
+
+    },
+
+    isUserIdValid: async (req, res, next) => {
+        try {
+
+          const { userId } = req.params;
+
+          const validate = commonValidator.idValidator.validate(userId);
+
+            if (validate.error) {
+                throw new CustomError(validate.error.message, 400);
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+
     },
 
     userNormalizator: (req, res, next) => {
