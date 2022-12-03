@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const controller = require("../controllers/user.controller");
 const middleware = require("../middlewares/user.middleware");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 
 router.get('/', controller.getAll);
@@ -15,14 +16,15 @@ router.post('/', middleware.isNewUserValid,
 
 router.get('/:userId',
     middleware.isUserIdValid,
-    middleware.getUserDynamically('userId', 'params', '_id'),
+    //authMiddleware.checkAccessToken,
+    middleware.checkUserDynamically('userId', 'params', '_id'),
     controller.getById
 );
 
 router.put('/:userId',
     middleware.isUserIdValid,
     middleware.isEditUserValid,
-    middleware.getUserDynamically('userId', 'params', '_id'),
+    middleware.checkUserDynamically('userId', 'params', '_id'),
     middleware.checkIsBodyValid,
     middleware.userNormalizator,
     controller.update
@@ -30,5 +32,10 @@ router.put('/:userId',
 
 router.delete('/:userId', middleware.isUserIdValid, controller.deleteById);
 
+router.get('/wCars/:userId',
+    middleware.isUserIdValid,
+    middleware.checkUserDynamically('userId', 'params', '_id'),
+    controller.getById
+);
 
 module.exports = router;

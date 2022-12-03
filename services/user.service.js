@@ -1,6 +1,5 @@
 const User = require("../dataBase/User");
 
-
 module.exports = {
     findByParams: async (filter = {}) => {
         return User.find(filter);
@@ -10,9 +9,27 @@ module.exports = {
         return User.findOne(filter);
     },
 
-    // getUserDynamically: async (filter = {})  => {
-    //     await User.findOne({ [dbField]: filter});
-    // },
+    findByIdWithCars: async (userId) => {
+        const result = await User.aggregate([
+            {
+                $match: { _id: userId }
+            },
+            {
+                $lookup: {
+                    from: 'cars',
+                    localField: '_id',
+                    foreignField: 'user',
+                    as: 'cars'
+                }
+            }
+        ]);
+
+        return result[0];
+    },
+
+    getUserDynamically: async (filter = {}) => {
+        return User.findOne(filter);
+    },
 
     create: async (userInfo) => {
         return User.create(userInfo);

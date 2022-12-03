@@ -4,16 +4,14 @@ const {userService} = require("../services");
 const userValidator = require('../validators/user.validator');
 const commonValidator = require('../validators/common.validators');
 
-const User = require("../dataBase/User");
 
 module.exports = {
 
-    getUserDynamically: (fieldName, from = 'body', dbField = fieldName) => async (req, res, next) => {
+    checkUserDynamically: (fieldName, from = 'body', dbField = fieldName) => async (req, res, next) => {
         try {
             const fieldToSearch = req[from][fieldName];
 
-            // const user = userService.getUserDynamically({ [dbField]: fieldToSearch })
-            const user = await User.findOne({ [dbField]: fieldToSearch });
+            const user = await userService.getUserDynamically({ [dbField]: fieldToSearch });
 
             if (!user) {
                 throw new CustomError('User not found', 404);

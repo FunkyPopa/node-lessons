@@ -1,18 +1,9 @@
-const router = require("express").Router();
+const router = require('express').Router();
 
-const controller = require("../controllers/car.controller");
-const middleware = require("../middlewares/car.middleware");
-
+const controller = require('../controllers/car.controller');
 
 router.get('/', controller.getAll);
 
-router.post('/', middleware.checkIsBodyValid, middleware.carNormalizator, controller.create);
-
-router.get('/:carId', middleware.checkIsUserExist, controller.getById);
-
-router.put('/:carId',middleware.checkIsUserExist, middleware.checkIsBodyValid, controller.update);
-
-router.delete('/:carId', middleware.checkIsUserExist, controller.deleteById);
-
+// router.get('/carId',); middleware, controller, cr!,up!,de!;
 
 module.exports = router;

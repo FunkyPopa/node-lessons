@@ -2,6 +2,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const CustomError = require("../error/CustomError");
+const configs = require('../config/config');
+const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
+const OAuth = require('../dataBase/OAuth');
 
 module.exports = {
     hashPassword: (password) => bcrypt.hash(password, 10),
@@ -15,18 +18,30 @@ module.exports = {
     },
 
     generateAccessTokenPair: (dataToSing = {}) => {
-        const accessToken = jwt.sign(dataToSing, 'secretWord', { expiresIn: '1m' });
-        const refreshToken = jwt.sign(dataToSing, 'secretRefreshWord', { expiresIn: '2m' });
-
-
-        // зробити через конфін ^^^^^ (витягнути в окрему константу)
-
+        const accessToken = jwt.sign(dataToSing, configs.ACCESS_KEY,{ expiresIn: '1m' });
+        const refreshToken = jwt.sign(dataToSing, configs.REFRESH_KEY,{ expiresIn: '2m' });
 
         return {
             accessToken,
             refreshToken
         }
-    }
-}
+    },
 
-// зроби шифрування токенів 1:25:00 +-
+    // checkToken: (token = '', tokenType = 'accessToken') => {
+    //     try {
+    //         let secret = '';
+    //
+    //         if(tokenType === 'accessToken') secret = ACCESS_KEY;
+    //         else if(tokenType === 'refreshToken') secret = REFRESH_KEY;
+    //
+    //         return jwt.verify(token, secret);
+    //     } catch (e) {
+    //         throw new CustomError('Token not valid!!!!!!', 401);
+    //     }
+    //
+    // },
+
+    // findToken: async (token) => {
+    //
+    // }
+}
