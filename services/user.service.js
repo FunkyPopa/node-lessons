@@ -12,7 +12,9 @@ module.exports = {
     findByIdWithCars: async (userId) => {
         const result = await User.aggregate([
             {
-                $match: { _id: userId }
+                $match: {
+                    _id: userId
+                }
             },
             {
                 $lookup: {

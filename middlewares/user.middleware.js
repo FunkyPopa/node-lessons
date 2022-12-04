@@ -4,10 +4,12 @@ const {userService} = require("../services");
 const userValidator = require('../validators/user.validator');
 const commonValidator = require('../validators/common.validators');
 
+const User = require('../dataBase/User');
+
 
 module.exports = {
 
-    checkUserDynamically: (fieldName, from = 'body', dbField = fieldName) => async (req, res, next) => {
+   getUserDynamically: (fieldName, from = 'body', dbField = fieldName) => async (req, res, next) => {
         try {
             const fieldToSearch = req[from][fieldName];
 
@@ -36,7 +38,7 @@ module.exports = {
           const user = await userService.findOneByParams({ email });
 
           if(user) {
-              throw new CustomError('User with this email already exist');
+              throw new CustomError('User with this email already exist', 400);
           }
 
           next();
@@ -70,7 +72,7 @@ module.exports = {
     isEditUserValid: async (req, res, next) => {
       try {
 
-        const validate = userValidator.newUserValidator.validate(req.body);
+        const validate = userValidator.editUserValidator.validate(req.body);
 
         if (validate.error) {
             throw new CustomError(validate.error.message, 400);
@@ -123,7 +125,7 @@ module.exports = {
 
     userNormalizator: (req, res, next) => {
 
-        let { name, email, password } = req.body;
+        let { name, email } = req.body;
 
         req.body.name = userNormalizator.name(name);
         req.body.email = email.toLowerCase();

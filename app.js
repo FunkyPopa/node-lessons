@@ -15,7 +15,7 @@ app.use('/users', userRouter);
 app.use('/cars', carRouter);
 
 app.get('/', (req, res) => {
-   res.json('Welcome')
+   res.json('Welcome');
 });
 
 app.use((err, req, res, next ) => {

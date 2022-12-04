@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const CustomError = require("../error/CustomError");
-const configs = require('../config/config');
-const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
 const OAuth = require('../dataBase/OAuth');
+const CustomError = require("../error/CustomError");
+const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
+const { tokenTypeEnum } = require('../enums');
 
 module.exports = {
     hashPassword: (password) => bcrypt.hash(password, 10),
@@ -18,8 +18,8 @@ module.exports = {
     },
 
     generateAccessTokenPair: (dataToSing = {}) => {
-        const accessToken = jwt.sign(dataToSing, configs.ACCESS_KEY,{ expiresIn: '1m' });
-        const refreshToken = jwt.sign(dataToSing, configs.REFRESH_KEY,{ expiresIn: '2m' });
+        const accessToken = jwt.sign(dataToSing, ACCESS_KEY,{ expiresIn: '15s' });
+        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY,{ expiresIn: '1m' });
 
         return {
             accessToken,
@@ -27,21 +27,21 @@ module.exports = {
         }
     },
 
-    // checkToken: (token = '', tokenType = 'accessToken') => {
-    //     try {
-    //         let secret = '';
-    //
-    //         if(tokenType === 'accessToken') secret = ACCESS_KEY;
-    //         else if(tokenType === 'refreshToken') secret = REFRESH_KEY;
-    //
-    //         return jwt.verify(token, secret);
-    //     } catch (e) {
-    //         throw new CustomError('Token not valid!!!!!!', 401);
-    //     }
-    //
-    // },
+    checkToken: (token = '', tokenType = tokenTypeEnum.accessToken) => {
+        try {
+            let secret = '';
 
-    // findToken: async (token) => {
-    //
-    // }
+            if (tokenType === tokenTypeEnum.accessToken) secret = ACCESS_KEY;
+            else if (tokenType === tokenTypeEnum.refreshToken) secret = REFRESH_KEY;
+
+            return jwt.verify(token, secret);
+        } catch (e) {
+            throw new CustomError('Token not valid!', 401);
+        }
+
+    },
+
+    findToken: async (token) => {
+        return OAuth.findOne({ token });
+    }
 }
