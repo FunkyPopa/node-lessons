@@ -18,8 +18,8 @@ module.exports = {
     },
 
     generateAccessTokenPair: (dataToSing = {}) => {
-        const accessToken = jwt.sign(dataToSing, ACCESS_KEY,{ expiresIn: '15s' });
-        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY,{ expiresIn: '1m' });
+        const accessToken = jwt.sign(dataToSing, ACCESS_KEY, {expiresIn: '15s'});
+        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY, {expiresIn: '2m'});
 
         return {
             accessToken,
@@ -42,6 +42,18 @@ module.exports = {
     },
 
     findToken: async (token) => {
-        return OAuth.findOne({ token });
-    }
-}
+        return OAuth.findOne(token);
+    },
+
+    createTokensInfo: async (tokensInfo) => {
+        return OAuth.create(tokensInfo);
+    },
+
+    deleteTokensInfo: async (filter) => {
+        return OAuth.deleteOne(filter);
+    },
+
+    deleteAllTokensInfo: async (filter) => {
+        return OAuth.deleteMany(filter);
+    },
+};

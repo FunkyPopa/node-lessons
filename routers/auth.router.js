@@ -9,5 +9,9 @@ router.post('/login', middleware.isBodyValid, userMiddleware.getUserDynamically(
 
 router.post('/refresh', middleware.checkRefreshToken, controller.refresh);
 
+router.post('/logout', middleware.checkAccessToken, controller.logout);
+
+router.post('/logoutALL', middleware.checkAccessToken, controller.logoutAll);
+
 
 module.exports = router;

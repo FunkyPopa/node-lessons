@@ -5,4 +5,7 @@ module.exports = {
 
     ACCESS_KEY: process.env.SECRET_ACCESS_KEY || 'secretWord',
     REFRESH_KEY: process.env.SECRET_REFRESH_KEY || 'secretRefreshWord',
+
+    NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL,
+    NO_REPLY_PASSWORD: process.env.NO_REPLY_PASSWORD
 }

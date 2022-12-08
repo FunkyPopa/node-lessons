@@ -1,4 +1,3 @@
-const OAuth = require('../dataBase/OAuth');
 const authValidator = require('../validators/auth.validator');
 const oauthService = require('../services/OAuth.service');
 
@@ -30,12 +29,13 @@ module.exports = {
 
             oauthService.checkToken(accessToken);
 
-            const tokenInfo = await oauthService.findToken(accessToken);
+            const tokenInfo = await oauthService.findToken({ accessToken });
 
             if (!tokenInfo) {
                 throw new CustomError("Token isn't valid", 401);
             }
 
+            req.tokenInfo = tokenInfo;
             next();
         } catch (e) {
             next(e);
@@ -52,7 +52,7 @@ module.exports = {
 
             oauthService.checkToken(refreshToken,  tokenTypeEnum.refreshToken);
 
-            const tokenInfo = await oauthService.findToken(refreshToken);
+            const tokenInfo = await oauthService.findToken({ refreshToken });
 
             if (!tokenInfo) {
                 throw new CustomError("Token isn't valid", 401);
