@@ -9,7 +9,7 @@ router.get('/', controller.getAll);
 
 router.post('/',
     middleware.isNewUserValid,
-    middleware.checkIsBodyValid,
+    middleware.isUserNameValid,
     middleware.checkIsEmailUnique,
     middleware.userNormalizator,
     controller.create
@@ -27,7 +27,7 @@ router.put('/:userId',
     middleware.isEditUserValid,
     authMiddleware.checkAccessToken,
     middleware.getUserDynamically('userId', 'params', '_id'),
-    middleware.checkIsBodyValid,
+    middleware.isUserNameValid,
     middleware.userNormalizator,
     controller.update
 );

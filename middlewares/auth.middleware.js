@@ -1,13 +1,41 @@
 const authValidator = require('../validators/auth.validator');
 const oauthService = require('../services/OAuth.service');
-
 const CustomError = require("../error/CustomError");
 const {tokenTypeEnum} = require("../enums");
+const {FORGOT_PASSWORD} = require("../config/token-action.enum");
 
 module.exports = {
     isBodyValid: async (req, res, next) => {
         try {
             const validate = authValidator.loginValidator.validate(req.body);
+
+            if (validate.error) {
+                throw new CustomError(validate.error.message, 400);
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    isEmailValid: async (req, res, next) => {
+        try {
+            const validate = authValidator.EmailValidator.validate(req.body);
+
+            if (validate.error) {
+                throw new CustomError(validate.error.message, 400);
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    isNewPasswordValid: async (req, res, next) => {
+        try {
+            const validate = authValidator.PasswordValidator.validate(req.body);
 
             if (validate.error) {
                 throw new CustomError(validate.error.message, 400);
@@ -29,7 +57,7 @@ module.exports = {
 
             oauthService.checkToken(accessToken);
 
-            const tokenInfo = await oauthService.findToken({ accessToken });
+            const tokenInfo = await oauthService.findAccessTokens({ accessToken });
 
             if (!tokenInfo) {
                 throw new CustomError("Token isn't valid", 401);
@@ -52,7 +80,7 @@ module.exports = {
 
             oauthService.checkToken(refreshToken,  tokenTypeEnum.refreshToken);
 
-            const tokenInfo = await oauthService.findToken({ refreshToken });
+            const tokenInfo = await oauthService.findAccessTokens({ refreshToken });
 
             if (!tokenInfo) {
                 throw new CustomError("Token isn't valid", 401);
@@ -63,5 +91,29 @@ module.exports = {
         } catch (e) {
             next(e);
         }
-    }
+    },
+
+    checkActionToken: async (req, res, next) => {
+        try {
+            const actionToken = req.get('Authorization');
+
+            if (!actionToken) {
+                throw new CustomError('No token', 401);
+            }
+
+            oauthService.checkActionToken(actionToken, FORGOT_PASSWORD);
+
+            const tokenInfo = await oauthService.findActionToken({ token: actionToken, tokenType: FORGOT_PASSWORD });
+
+            if (!tokenInfo) {
+                throw new CustomError("Token isn't valid", 401);
+            }
+
+            req.user = tokenInfo._user_id;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
 }

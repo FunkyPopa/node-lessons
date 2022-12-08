@@ -2,9 +2,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const OAuth = require('../dataBase/OAuth');
+const ActionToken = require('../dataBase/ActionToken');
 const CustomError = require("../error/CustomError");
-const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
 const { tokenTypeEnum } = require('../enums');
+const tokenTypes = require('../config/token-action.enum');
+const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
+const oauthHelper = require("../helpers/oauth.helper");
 
 module.exports = {
     hashPassword: (password) => bcrypt.hash(password, 10),
@@ -13,7 +16,7 @@ module.exports = {
         const isPasswordsSame = await bcrypt.compare(password, hashPassword)
 
         if (!isPasswordsSame) {
-            throw new CustomError('Wrong email or password ', 400);
+            throw new CustomError('Wrong email or password', 400);
         }
     },
 
@@ -25,6 +28,14 @@ module.exports = {
             accessToken,
             refreshToken
         }
+    },
+
+    generateActionToken: (actionType, dataToSing = {}) => {
+
+        const secretWord = oauthHelper.getSecretWordForActionToken(actionType);
+
+        return jwt.sign(dataToSing, secretWord, {expiresIn: '1m'});
+
     },
 
     checkToken: (token = '', tokenType = tokenTypeEnum.accessToken) => {
@@ -41,7 +52,18 @@ module.exports = {
 
     },
 
-    findToken: async (token) => {
+    checkActionToken: (token, actionType) => {
+        try {
+            const secretWord = oauthHelper.getSecretWordForActionToken(actionType);
+
+           return jwt.verify(token, secretWord);
+        } catch (e) {
+            throw new CustomError('Token not valid', 401);
+        }
+    },
+
+
+    findAccessTokens: async (token) => {
         return OAuth.findOne(token);
     },
 
@@ -56,4 +78,20 @@ module.exports = {
     deleteAllTokensInfo: async (filter) => {
         return OAuth.deleteMany(filter);
     },
+
+
+    findActionToken: async (token) => {
+        return ActionToken
+            .findOne(token)
+            .populate('_user_id');
+    },
+
+    createActionTokenInfo: async (tokenInfo) => {
+        return ActionToken.create(tokenInfo);
+    },
+
+    deleteActionTokenInfo: async (filter) => {
+        return ActionToken.deleteOne(filter);
+    }
+
 };

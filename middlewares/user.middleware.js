@@ -1,10 +1,8 @@
 const CustomError = require("../error/CustomError");
-const {userNormalizator} = require("../helper");
+const {userNormalizator} = require("../helpers");
 const {userService} = require("../services");
 const userValidator = require('../validators/user.validator');
 const commonValidator = require('../validators/common.validators');
-
-const User = require('../dataBase/User');
 
 
 module.exports = {
@@ -47,20 +45,12 @@ module.exports = {
       }
     },
 
-    checkIsBodyValid: async (req, res, next) => {
+    isUserNameValid: async (req, res, next) => {
         try {
-            const {name, email, password} = req.body;
+            const { name } = req.body;
 
             if(!name || typeof name !== 'string' || name.length < 2) {
                 throw new CustomError('Name is invalid', 400);
-            }
-
-            if(!email || typeof email !== 'string' || !email.includes("@")) {
-                throw new CustomError('Email is invalid', 400);
-            }
-
-            if(!password || typeof password !== 'string' || password.length < 6) {
-                throw new CustomError('Password is invalid', 400);
             }
 
             next();
