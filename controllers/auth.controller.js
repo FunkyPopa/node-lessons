@@ -16,7 +16,7 @@ module.exports = {
 
             await oauthService.createTokensInfo({ ...tokenPair, _user_id: user._id });
 
-            await emailService.sendEmail('andreybuno333@gmail.com', WELCOME, {userName: user.name});
+            await emailService.sendEmail(user.email, WELCOME, { userName: user.name });
 
             res.status(201).json({
                 user,
