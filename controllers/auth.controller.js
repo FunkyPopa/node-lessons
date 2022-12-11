@@ -16,7 +16,7 @@ module.exports = {
 
             await oauthService.createTokensInfo({ ...tokenPair, _user_id: user._id });
 
-            await emailService.sendEmail(user.email, WELCOME, { userName: user.name });
+            await emailService.sendEmail(user.email, WELCOME, { userName: user.name, array: [{ number: 1 }, { number: 2 }, { number: 3 }] });
 
             res.status(201).json({
                 user,
@@ -75,7 +75,7 @@ module.exports = {
             const forgotPassFrontURL = `${FRONTEND_URL}/password/new?token=${actionToken}`;
 
             await oauthService.createActionTokenInfo({ _user_id: user._id, token: actionToken, tokenType: FORGOT_PASSWORD });
-            await emailService.sendEmail('andreybuno333@gmail.com', FORGOT_PASS, { url: forgotPassFrontURL });
+            await emailService.sendEmail(user.email, FORGOT_PASS, { url: forgotPassFrontURL, userName: user.name });
 
             res.status(201).json({actionToken: actionToken});
         } catch (e) {

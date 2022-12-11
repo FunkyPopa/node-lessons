@@ -8,6 +8,7 @@ const CustomError = require("../error/CustomError");
 
 const sendEmail = async (receiverMail, emailActions, context = {}) => {
     const transporter = nodemailer.createTransport({
+        from: 'No reply',
         service: 'gmail',
         auth: {
             user: NO_REPLY_EMAIL,
@@ -29,7 +30,7 @@ const sendEmail = async (receiverMail, emailActions, context = {}) => {
             extname: '.hbs',
         },
         extName: '.hbs',
-        partialsDir: path.join(process.cwd(), 'email-templates', 'views')
+        viewPath: path.join(process.cwd(), 'email-templates', 'views')
     };
 
     transporter.use('compile', hbs(options));
@@ -37,7 +38,6 @@ const sendEmail = async (receiverMail, emailActions, context = {}) => {
     context.frontendURL = FRONTEND_URL;
 
     return transporter.sendMail({
-        from: 'No reply',
         to: receiverMail,
         subject: templateInfo.subject,
         template: templateInfo.templateName,
