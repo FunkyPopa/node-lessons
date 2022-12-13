@@ -1,9 +1,8 @@
-const oauthService = require('../services/OAuth.service');
-const emailService = require('../services/email.service');
-const {WELCOME, FORGOT_PASS} = require("../config/email-actions-enum");
-const {FORGOT_PASSWORD} = require("../config/token-action.enum");
+const { userService, oldPasswordService, emailService, oauthService } = require("../services");
+const {WELCOME, FORGOT_PASS} = require("../enums/email-actions.enum");
+const {FORGOT_PASSWORD} = require("../enums/token-action.enum");
 const {FRONTEND_URL} = require("../config/config");
-const {userService} = require("../services");
+
 
 module.exports = {
     login: async (req, res, next) => {
@@ -14,7 +13,7 @@ module.exports = {
 
             const tokenPair = oauthService.generateAccessTokenPair({ id: user._id });
 
-            await oauthService.createTokensInfo({ ...tokenPair, _user_id: user._id });
+            await oauthService.createAccessTokensInfo({ ...tokenPair, _user_id: user._id });
 
             await emailService.sendEmail(user.email, WELCOME, { userName: user.name, array: [{ number: 1 }, { number: 2 }, { number: 3 }] });
 
@@ -31,11 +30,11 @@ module.exports = {
         try {
           const { refreshToken, _user_id } = req.tokenInfo;
 
-            await oauthService.deleteTokensInfo({ refreshToken });
+            await oauthService.deleteAccessTokensInfo({ refreshToken });
 
             const tokenPair = oauthService.generateAccessTokenPair({ id: _user_id });
 
-            await oauthService.createTokensInfo({ ...tokenPair, _user_id });
+            await oauthService.createAccessTokensInfo({ ...tokenPair, _user_id });
 
             res.status(201).json(tokenPair);
         } catch (e) {
@@ -47,7 +46,7 @@ module.exports = {
         try {
             const { accessToken } = req.tokenInfo;
 
-            await oauthService.deleteTokensInfo({ accessToken });
+            await oauthService.deleteAccessTokensInfo({ accessToken });
 
             res.sendStatus(204);
         } catch (e) {
@@ -59,7 +58,7 @@ module.exports = {
         try {
             const { _user_id } = req.tokenInfo;
 
-            await oauthService.deleteAllTokensInfo({ _user_id })
+            await oauthService.deleteAllAccessTokensInfo({_user_id});
 
             res.sendStatus(204);
         } catch (e) {
@@ -77,7 +76,7 @@ module.exports = {
             await oauthService.createActionTokenInfo({ _user_id: user._id, token: actionToken, tokenType: FORGOT_PASSWORD });
             await emailService.sendEmail(user.email, FORGOT_PASS, { url: forgotPassFrontURL, userName: user.name });
 
-            res.status(201).json({actionToken: actionToken});
+            res.status(201).json({ actionToken: actionToken });
         } catch (e) {
             next(e);
         }
@@ -85,10 +84,14 @@ module.exports = {
 
     setPasswordAfterForgot: async (req, res, next) => {
         try {
-            const hashPassword = await oauthService.hashPassword(req.body.password);
+            const { user, body } = req;
 
-            await userService.updateById({_id: req.user._id}, { password: hashPassword });
-            await oauthService.deleteActionTokenInfo({ token: req.get('Authorization') });
+            const hashPassword = await oauthService.hashPassword(body.password);
+
+            await oldPasswordService.create({ _user_id: user._id, password: user.password });
+
+            await userService.updateById({_id: user._id}, {password: hashPassword});
+            await oauthService.deleteActionTokenInfo({token: req.get('Authorization') });
 
             res.sendStatus(204);
         } catch (e) {

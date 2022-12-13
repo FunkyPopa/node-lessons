@@ -1,6 +1,7 @@
 module.exports = {
-    oauthService: require('./OAuth.service'),
+    oauthService: require('./oAuth.service'),
     userService: require('./user.service'),
     carService: require('./car.service'),
-    emailService: require('./email.service')
+    emailService: require('./email.service'),
+    oldPasswordService: require('./oldPassword.service')
 }

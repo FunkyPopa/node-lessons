@@ -1,4 +1,4 @@
-const tokenTypes = require("../config/token-action.enum");
+const tokenTypes = require("../enums/token-action.enum");
 const {CONFIRM_ACCOUNT_ACTION_TOKEN, FORGOT_PASSWORD_ACTION_TOKEN} = require("../config/config");
 
 module.exports = {

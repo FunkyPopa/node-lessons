@@ -15,7 +15,7 @@ router.post('/logoutALL', middleware.checkAccessToken, controller.logoutAll);
 
 router.post('/password/forgot', middleware.isEmailValid, userMiddleware.getUserDynamically('email'), controller.forgotPassword);
 
-router.put('/password/forgot', middleware.isNewPasswordValid, middleware.checkActionToken, controller.setPasswordAfterForgot);
+router.put('/password/forgot', middleware.isNewPasswordValid, middleware.checkActionToken, middleware.checkOldPassword, controller.setPasswordAfterForgot);
 
 
 module.exports = router;

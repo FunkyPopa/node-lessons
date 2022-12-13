@@ -1,8 +1,10 @@
 const authValidator = require('../validators/auth.validator');
-const oauthService = require('../services/OAuth.service');
+const oauthService = require('../services/oAuth.service');
 const CustomError = require("../error/CustomError");
-const {tokenTypeEnum} = require("../enums");
-const {FORGOT_PASSWORD} = require("../config/token-action.enum");
+const { tokenTypeEnum } = require("../enums");
+const { FORGOT_PASSWORD } = require("../enums/token-action.enum");
+const { oldPasswordService } = require("../services");
+const { compareOldPasswords } = require("../services/oAuth.service");
 
 module.exports = {
     isBodyValid: async (req, res, next) => {
@@ -116,4 +118,26 @@ module.exports = {
         }
     },
 
+    checkOldPassword: async (req, res, next) => {
+        try {
+            const { user, body } = req;
+            const oldPasswords = await oldPasswordService.find({ _user_id: user._id }).lean();
+
+            if (!oldPasswords.length){
+                return next();
+            }
+
+            const isPasswordsSame = await Promise.all(oldPasswords.map((record) => compareOldPasswords(record.password, body.password)));
+
+            const condition = isPasswordsSame.some((res) => res)
+
+            if (condition) {
+                throw new CustomError('This is old password', 409);
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 }

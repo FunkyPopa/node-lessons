@@ -1,5 +1,5 @@
 const { userService, oauthService, emailService } = require("../services");
-const { FORGOT_PASS } = require("../config/email-actions-enum");
+const { FORGOT_PASS } = require("../enums/email-actions.enum");
 
 module.exports = {
 

@@ -1,4 +1,4 @@
-const {WELCOME, FORGOT_PASS} = require("../config/email-actions-enum");
+const {WELCOME, FORGOT_PASS} = require("../enums/email-actions.enum");
 
 module.exports = {
     [WELCOME]: {

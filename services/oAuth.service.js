@@ -5,7 +5,6 @@ const OAuth = require('../dataBase/OAuth');
 const ActionToken = require('../dataBase/ActionToken');
 const CustomError = require("../error/CustomError");
 const { tokenTypeEnum } = require('../enums');
-const tokenTypes = require('../config/token-action.enum');
 const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
 const oauthHelper = require("../helpers/oauth.helper");
 
@@ -18,6 +17,10 @@ module.exports = {
         if (!isPasswordsSame) {
             throw new CustomError('Wrong email or password', 400);
         }
+    },
+
+    compareOldPasswords: async (hashPassword, password) => {
+        return bcrypt.compare(password, hashPassword);
     },
 
     generateAccessTokenPair: (dataToSing = {}) => {
@@ -67,15 +70,15 @@ module.exports = {
         return OAuth.findOne(token);
     },
 
-    createTokensInfo: async (tokensInfo) => {
+    createAccessTokensInfo: async (tokensInfo) => {
         return OAuth.create(tokensInfo);
     },
 
-    deleteTokensInfo: async (filter) => {
+    deleteAccessTokensInfo: async (filter) => {
         return OAuth.deleteOne(filter);
     },
 
-    deleteAllTokensInfo: async (filter) => {
+    deleteAllAccessTokensInfo: async (filter) => {
         return OAuth.deleteMany(filter);
     },
 
