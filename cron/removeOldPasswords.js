@@ -14,9 +14,9 @@ module.exports = new CronJob(
             const yearAgo = dayjs().utc().subtract(1, 'year');
 
             await oldPasswordService.delete({ createdAt: { $lte: yearAgo }});
-
+            console.log('End removing passwords');
         } catch (e) {
             console.error(e);
         }
-    },
+    }
 );

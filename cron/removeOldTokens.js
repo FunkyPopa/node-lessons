@@ -14,7 +14,7 @@ module.exports = new CronJob(
             const monthAgo = dayjs().utc().subtract(1, 'day');
 
             await oauthService.deleteAllAccessTokensInfo({ createdAt: { $lte: monthAgo }});
-
+            console.log('End removing tokens');
         } catch (e) {
             console.error(e);
         }

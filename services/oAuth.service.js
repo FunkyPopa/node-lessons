@@ -67,7 +67,7 @@ module.exports = {
 
 
     findAccessTokens: async (token) => {
-        return OAuth.findOne(token);
+        return OAuth.findOne(token)
     },
 
     createAccessTokensInfo: async (tokensInfo) => {

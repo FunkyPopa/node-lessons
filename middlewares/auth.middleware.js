@@ -121,7 +121,7 @@ module.exports = {
     checkOldPassword: async (req, res, next) => {
         try {
             const { user, body } = req;
-            const oldPasswords = await oldPasswordService.find({ _user_id: user._id }).lean();
+            const oldPasswords = await oldPasswordService.find({ _user_id: user._id }, { password: 1 }).lean();
 
             if (!oldPasswords.length){
                 return next();

@@ -1,5 +1,5 @@
 const { userService, oldPasswordService, emailService, oauthService } = require("../services");
-const {WELCOME, FORGOT_PASS} = require("../enums/email-actions.enum");
+const {WELCOME, FORGOT_PASS, RETURN} = require("../enums/email-actions.enum");
 const {FORGOT_PASSWORD} = require("../enums/token-action.enum");
 const {FRONTEND_URL} = require("../config/config");
 
@@ -15,7 +15,7 @@ module.exports = {
 
             await oauthService.createAccessTokensInfo({ ...tokenPair, _user_id: user._id });
 
-            await emailService.sendEmail(user.email, WELCOME, { userName: user.name, array: [{ number: 1 }, { number: 2 }, { number: 3 }] });
+            await emailService.sendEmail(user.email, WELCOME, { userName: user.name, /*array: [{ number: 1 }, { number: 2 }, { number: 3 }]*/ });
 
             res.status(201).json({
                 user,
