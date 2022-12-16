@@ -33,8 +33,9 @@ module.exports = {
         return User.findOne(filter);
     },
 
+
     create: async (userInfo) => {
-        return User.create(userInfo);
+        return User.createWithHashPassword(userInfo);
     },
 
     updateById: async (userId, newUserInfo) => {

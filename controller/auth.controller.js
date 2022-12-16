@@ -1,7 +1,8 @@
-const { userService, oldPasswordService, emailService, oauthService } = require("../services");
-const {WELCOME, FORGOT_PASS, RETURN} = require("../enums/email-actions.enum");
-const {FORGOT_PASSWORD} = require("../enums/token-action.enum");
-const {FRONTEND_URL} = require("../config/config");
+const { userService, oldPasswordService, emailService, oauthService } = require("../service");
+const { WELCOME, FORGOT_PASS } = require("../enum/email-actions.enum");
+const { FORGOT_PASSWORD } = require("../enum/token-action.enum");
+const { FRONTEND_URL } = require("../config/config");
+const { oAuthHelper } = require("../helper");
 
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
         try {
             const { user, body } = req;
 
-            await oauthService.comparePasswords(user.password, body.password);
+            await user.comparePassword(body.password);
 
             const tokenPair = oauthService.generateAccessTokenPair({ id: user._id });
 
@@ -86,7 +87,7 @@ module.exports = {
         try {
             const { user, body } = req;
 
-            const hashPassword = await oauthService.hashPassword(body.password);
+            const hashPassword = await oAuthHelper.hashPassword(body.password);
 
             await oldPasswordService.create({ _user_id: user._id, password: user.password });
 

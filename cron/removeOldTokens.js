@@ -2,7 +2,7 @@ const { CronJob } = require('cron');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 
-const { oauthService } = require("../services");
+const { oauthService } = require("../service");
 
 dayjs.extend(utc);
 

@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const regexp = require('../enums/regexp.enum')
+const regexp = require('../enum/regexp.enum')
 
 module.exports = {
     newUserValidator: Joi.object({

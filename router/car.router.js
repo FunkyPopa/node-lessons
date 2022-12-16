@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const controller = require('../controllers/car.controller');
+const controller = require('../controller/car.controller');
 
 router.get('/', controller.getAll);
 

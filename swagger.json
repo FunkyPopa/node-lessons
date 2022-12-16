@@ -1,0 +1,135 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "June-2022"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "description": "Get all users",
+        "tags": ["User"],
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/singleUser"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "description": "Get user by Id",
+        "tags": ["User"],
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "userId",
+            "type": "string",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "type": "string",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success response",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update user",
+        "tags": ["User"],
+        "operationId": "updateUserById",
+        "parameters": [
+          {
+            "name": "email",
+            "type": "string",
+            "in": "formData",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was updated",
+            "schema": {
+              "$ref": "#/definitions/singleUser"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ApiError": {
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Something went wrong"
+        }
+      }
+    },
+    "singleUser": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Andrew"
+        },
+        "email": {
+          "type": "string",
+          "example": "exapmle@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "secretPassword"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-12-02T18:27:26.835Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-12-02T18:27:26.835Z"
+        },
+        "__v": {
+          "type": "integer",
+          "example": 0
+        },
+        "fullName": {
+          "type": "string",
+          "example": "Andrew Poroshenko"
+        },
+        "id": {
+          "type": "string",
+          "example": "638a438e267254d282c8c363"
+        }
+      }
+    }
+  }
+}

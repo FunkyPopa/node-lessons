@@ -1,10 +1,11 @@
-const authValidator = require('../validators/auth.validator');
-const oauthService = require('../services/oAuth.service');
+const authValidator = require('../validator/auth.validator');
+const oauthService = require('../service/oAuth.service');
 const CustomError = require("../error/CustomError");
-const { tokenTypeEnum } = require("../enums");
-const { FORGOT_PASSWORD } = require("../enums/token-action.enum");
-const { oldPasswordService } = require("../services");
-const { compareOldPasswords } = require("../services/oAuth.service");
+const { tokenTypeEnum } = require("../enum");
+const { FORGOT_PASSWORD } = require("../enum/token-action.enum");
+const { oldPasswordService } = require("../service");
+const { compareOldPasswords } = require("../service/oAuth.service");
+const {oAuthHelper} = require("../helper");
 
 module.exports = {
     isBodyValid: async (req, res, next) => {
@@ -127,7 +128,7 @@ module.exports = {
                 return next();
             }
 
-            const isPasswordsSame = await Promise.all(oldPasswords.map((record) => compareOldPasswords(record.password, body.password)));
+            const isPasswordsSame = await Promise.all(oldPasswords.map((record) => oAuthHelper.compareOldPasswords(record.password, body.password)));
 
             const condition = isPasswordsSame.some((res) => res)
 

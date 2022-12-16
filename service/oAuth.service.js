@@ -1,31 +1,17 @@
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const OAuth = require('../dataBase/OAuth');
 const ActionToken = require('../dataBase/ActionToken');
 const CustomError = require("../error/CustomError");
-const { tokenTypeEnum } = require('../enums');
-const {ACCESS_KEY, REFRESH_KEY} = require("../config/config");
-const oauthHelper = require("../helpers/oauth.helper");
+const { tokenTypeEnum } = require('../enum');
+const { ACCESS_KEY, REFRESH_KEY } = require("../config/config");
+const oauthHelper = require("../helper/oauth.helper");
 
 module.exports = {
-    hashPassword: (password) => bcrypt.hash(password, 10),
-
-    comparePasswords: async (hashPassword, password) => {
-        const isPasswordsSame = await bcrypt.compare(password, hashPassword)
-
-        if (!isPasswordsSame) {
-            throw new CustomError('Wrong email or password', 400);
-        }
-    },
-
-    compareOldPasswords: async (hashPassword, password) => {
-        return bcrypt.compare(password, hashPassword);
-    },
 
     generateAccessTokenPair: (dataToSing = {}) => {
-        const accessToken = jwt.sign(dataToSing, ACCESS_KEY, {expiresIn: '15s'});
-        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY, {expiresIn: '2m'});
+        const accessToken = jwt.sign(dataToSing, ACCESS_KEY, { expiresIn: '15s' });
+        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY, { expiresIn: '2m' });
 
         return {
             accessToken,
@@ -37,7 +23,7 @@ module.exports = {
 
         const secretWord = oauthHelper.getSecretWordForActionToken(actionType);
 
-        return jwt.sign(dataToSing, secretWord, {expiresIn: '1m'});
+        return jwt.sign(dataToSing, secretWord, { expiresIn: '1m' });
 
     },
 

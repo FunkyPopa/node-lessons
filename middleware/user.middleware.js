@@ -1,8 +1,8 @@
 const CustomError = require("../error/CustomError");
-const {userNormalizator} = require("../helpers");
-const {userService} = require("../services");
-const userValidator = require('../validators/user.validator');
-const commonValidator = require('../validators/common.validators');
+const {userNormalizator} = require("../helper");
+const {userService} = require("../service");
+const userValidator = require('../validator/user.validator');
+const commonValidator = require('../validator/common.validators');
 
 
 module.exports = {
