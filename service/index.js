@@ -3,5 +3,6 @@ module.exports = {
     userService: require('./user.service'),
     carService: require('./car.service'),
     emailService: require('./email.service'),
-    oldPasswordService: require('./oldPassword.service')
+    oldPasswordService: require('./oldPassword.service'),
+    smsService: require('./sms.service'),
 }

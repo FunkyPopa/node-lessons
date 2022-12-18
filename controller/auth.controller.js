@@ -1,8 +1,9 @@
-const { userService, oldPasswordService, emailService, oauthService } = require("../service");
+const { userService, oldPasswordService, emailService, oauthService, smsService} = require("../service");
 const { WELCOME, FORGOT_PASS } = require("../enum/email-actions.enum");
 const { FORGOT_PASSWORD } = require("../enum/token-action.enum");
+const { smsActionTypeEnum } = require("../enum");
 const { FRONTEND_URL } = require("../config/config");
-const { oAuthHelper } = require("../helper");
+const { oAuthHelper, smsTemplate } = require("../helper");
 
 
 module.exports = {
@@ -16,7 +17,11 @@ module.exports = {
 
             await oauthService.createAccessTokensInfo({ ...tokenPair, _user_id: user._id });
 
-            await emailService.sendEmail(user.email, WELCOME, { userName: user.name, /*array: [{ number: 1 }, { number: 2 }, { number: 3 }]*/ });
+            await Promise.allSettled([
+                emailService.sendEmail(user.email, WELCOME, { userName: user.name, /*array: [{ number: 1 }*/ condition: false }),
+
+                smsService.sendSMS(smsTemplate[smsActionTypeEnum.WELCOME](user.name), user.phone),
+            ])
 
             res.status(201).json({
                 user,

@@ -4,7 +4,8 @@ const { oAuthHelper } = require("../helper");
 const userSchema = new Schema({
    name: { type: String, default: '' },
    email: { type: String, required: true, trim: true, lowercase: true },
-   password: { type: String, required: true}
+   password: { type: String, required: true},
+   phone: { type: String }, // middleware if phone unique
 }, {
    timestamps: true,
    toJSON: { virtuals: true },
