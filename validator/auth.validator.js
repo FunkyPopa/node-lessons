@@ -5,7 +5,8 @@ const regexp = require("../enum/regexp.enum");
 module.exports = {
     loginValidator: Joi.object({
         email: Joi.string().regex(regexp.EMAIL).lowercase().trim().required(),
-        password: Joi.string().regex(regexp.PASSWORD).required()
+        password: Joi.string().regex(regexp.PASSWORD).required(),
+        phone: Joi.string().regex(regexp.PHONE).optional()
     }),
 
     EmailValidator: Joi.object({

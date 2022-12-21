@@ -4,8 +4,7 @@ const CustomError = require("../error/CustomError");
 const { tokenTypeEnum } = require("../enum");
 const { FORGOT_PASSWORD } = require("../enum/token-action.enum");
 const { oldPasswordService } = require("../service");
-const { compareOldPasswords } = require("../service/oAuth.service");
-const {oAuthHelper} = require("../helper");
+const { oAuthHelper } = require("../helper");
 
 module.exports = {
     isBodyValid: async (req, res, next) => {

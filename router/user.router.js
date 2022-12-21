@@ -11,6 +11,7 @@ router.post('/',
     middleware.isNewUserValid,
     middleware.isUserNameValid,
     middleware.checkIsEmailUnique,
+    middleware.checkIsPhoneUnique,
     middleware.userNormalizator,
     controller.create
 );

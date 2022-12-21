@@ -45,6 +45,26 @@ module.exports = {
       }
     },
 
+    checkIsPhoneUnique: async (req, res, next) => {
+        try {
+            const { phone } = req.body;
+
+            if(!phone) {
+                throw new CustomError('Phone not present', 400);
+            }
+
+            const user = await userService.findOneByParams({ phone });
+
+            if(user) {
+                throw new CustomError('User with this phone already exist', 400);
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
     isUserNameValid: async (req, res, next) => {
         try {
             const { name } = req.body;
