@@ -1,4 +1,4 @@
-const { userService } = require("../service");
+const { userService, s3Service } = require("../service");
 
 module.exports = {
 
@@ -58,5 +58,20 @@ module.exports = {
             next(e);
         }
 
+    },
+
+    uploadAvatar: async (req, res, next) => {
+        try {
+            // const uploadedData = await s3Service.uploadPublicFile(req.files.avatar, 'user', req.user._id);
+            const uploadedData = {
+                Location: 'Canada'
+            }
+
+            const updatedUser = await userService.updateById(req.user._id, { avatar: uploadedData.Location }, { new: true });
+
+            res.json(updatedUser);
+        } catch (e) {
+            next(e);
+        }
     }
 };

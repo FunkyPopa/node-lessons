@@ -1,6 +1,7 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload');
 const swaggerUI = require('swagger-ui-express');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const configs = require('./config/config');
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJSON));
+
+app.use(fileUpload());
 
 app.use('/auth', authRouter);
 app.use('/users', userRouter);

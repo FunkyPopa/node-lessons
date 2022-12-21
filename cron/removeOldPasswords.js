@@ -7,7 +7,7 @@ const { oldPasswordService } = require("../service");
 dayjs.extend(utc);
 
 module.exports = new CronJob(
-    '*/30 * * * * *',
+    '* * 1 * * *',
     async function () {
         try {
             console.log('Start removing passwords');
