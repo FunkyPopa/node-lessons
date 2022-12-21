@@ -1,4 +1,5 @@
 const { userService, s3Service } = require("../service");
+const { s3ItemType } = require('../enum');
 
 module.exports = {
 
@@ -62,12 +63,20 @@ module.exports = {
 
     uploadAvatar: async (req, res, next) => {
         try {
-            // const uploadedData = await s3Service.uploadPublicFile(req.files.avatar, 'user', req.user._id);
-            const uploadedData = {
-                Location: 'Canada'
-            }
+            //save locally in static
+            // const path = require('node:path');
+            // const ext = path.extname(req.files.avatar.name);
+            // const uploadPath = path.join(process.cwd(), 'static', `${Date.now()}${ext}`);
+            //
+            // req.files.avatar.mv(uploadPath, (err) => {
+            //     if (err) {
+            //         throw err;
+            //     }
+            // });
 
-            const updatedUser = await userService.updateById(req.user._id, { avatar: uploadedData.Location }, { new: true });
+            const uploadedData = await s3Service.uploadPublicFile(req.files.avatar, s3ItemType.user, req.user._id);
+
+            const updatedUser = await userService.updateById(req.user._id, { avatar: uploadedData.Location });
 
             res.json(updatedUser);
         } catch (e) {

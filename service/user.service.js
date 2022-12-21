@@ -39,7 +39,7 @@ module.exports = {
     },
 
     updateById: async (userId, newUserInfo) => {
-        return User.findByIdAndUpdate(userId, newUserInfo);
+        return User.findByIdAndUpdate(userId, newUserInfo, { new: true });
     },
 
     deleteById: async (userId) => {

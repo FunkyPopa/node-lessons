@@ -25,7 +25,7 @@ async function uploadPublicFile(fileToUpload, itemType, itemId) {
 function buildFileName(fileName, itemType, itemId) {
     const ext = path.extname(fileName); //image.jpg => .jpg
 
-    return `${itemType}/${itemId}/${uuidV1()}${ext}`
+    return `${itemType}/${itemId}/${uuidV1()}${ext}`;
 }
 
 module.exports = {

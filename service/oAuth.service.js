@@ -10,8 +10,8 @@ const oauthHelper = require("../helper/oauth.helper");
 module.exports = {
 
     generateAccessTokenPair: (dataToSing = {}) => {
-        const accessToken = jwt.sign(dataToSing, ACCESS_KEY, { expiresIn: '15s' });
-        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY, { expiresIn: '2m' });
+        const accessToken = jwt.sign(dataToSing, ACCESS_KEY, { expiresIn: '5m' });
+        const refreshToken = jwt.sign(dataToSing, REFRESH_KEY, { expiresIn: '10m' });
 
         return {
             accessToken,
@@ -23,7 +23,7 @@ module.exports = {
 
         const secretWord = oauthHelper.getSecretWordForActionToken(actionType);
 
-        return jwt.sign(dataToSing, secretWord, { expiresIn: '1m' });
+        return jwt.sign(dataToSing, secretWord, { expiresIn: '2m' });
 
     },
 
