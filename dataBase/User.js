@@ -9,6 +9,7 @@ const userSchema = new Schema({
    avatar: { type: String },
    phone: { type: String }
 }, {
+   versionKey: false,
    timestamps: true,
    toJSON: { virtuals: true },
    toObject: { virtuals: true }

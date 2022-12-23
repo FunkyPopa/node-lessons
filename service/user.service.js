@@ -1,6 +1,38 @@
 const User = require("../dataBase/User");
 
 module.exports = {
+    find: async (query) => {
+        const { limit = 10, page = 1, name, age } = query;
+
+        let findObj = {};
+
+        if (name) {
+            findObj = {
+                ...findObj,
+                name: { $regex: name }
+            }
+        }
+
+        // if (age) {
+        //     findObj = {
+        //         ...findObj,
+        //         age: { $eq: +age }
+        //
+        // }
+
+        const [data, count] = await Promise.all([
+            User.find(findObj).limit(limit).skip((page - 1) * limit), // pagination
+            User.count(findObj).limit(limit),
+        ]);
+
+        return {
+            data,
+            page: +page,
+            count,
+        };
+
+    },
+
     findByParams: async (filter = {}) => {
         return User.find(filter);
     },

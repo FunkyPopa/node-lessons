@@ -1,13 +1,15 @@
 const { userService, s3Service } = require("../service");
 const { s3ItemType } = require('../enum');
+const {userPresenter} = require("../presenter");
 
 module.exports = {
 
     getAll: async (req, res, next) => {
         try {
-            const users = await userService.findByParams();
+            const result = await userService.find(req.query);
 
-            res.json(users);
+            result.data = userPresenter.normalizeMany(result.data);
+            res.json(result);
         } catch (e) {
             next(e);
         }
@@ -77,6 +79,30 @@ module.exports = {
             const uploadedData = await s3Service.uploadPublicFile(req.files.avatar, s3ItemType.user, req.user._id);
 
             const updatedUser = await userService.updateById(req.user._id, { avatar: uploadedData.Location });
+
+            res.json(updatedUser);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    updateAvatar: async (req, res, next) => {
+        try {
+            const uploadedData = await s3Service.updatePublicFile(req.user.avatar, req.files.avatar, req.user._id);
+
+            const updatedUser = await userService.updateById(req.user._id, { avatar: uploadedData.Location });
+
+            res.json(updatedUser);
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    deleteAvatar: async (req, res, next) => {
+        try {
+            await s3Service.deletePublicFile(req.user.avatar);
+
+            const updatedUser = await userService.updateById(req.user._id, { avatar: null });
 
             res.json(updatedUser);
         } catch (e) {

@@ -20,7 +20,7 @@ module.exports = {
             await Promise.allSettled([
                 emailService.sendEmail(user.email, WELCOME, { userName: user.name, /*array: [{ number: 1 }*/ condition: false }),
 
-                smsService.sendSMS(smsTemplate[smsActionTypeEnum.WELCOME](user.name), user.phone),
+                // smsService.sendSMS(smsTemplate[smsActionTypeEnum.WELCOME](user.name), user.phone),
             ])
 
             res.status(201).json({
