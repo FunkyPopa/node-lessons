@@ -1,8 +1,13 @@
 module.exports = {
+    HOST: process.env.HOST,
     PORT: process.env.PORT || 5002,
     DB_PASSWORD: process.env.DB_PASSWORD || 'password',
     MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/testDB',
     FRONTEND_URL: process.env.FRONTEND_URL || 'https://google.com',
+
+    MONGO_INITDB_DATABASE: process.env.MONGO_INITDB_DATABASE,
+    MONGO_INITDB_R00T_USERNAME: process.env.MONGO_INITDB_R00T_USERNAME,
+    MONGO_INITDB_ROOT_PASSWORD: process.env.MONGO_INITDB_ROOT_PASSWORD,
 
     ACCESS_KEY: process.env.SECRET_ACCESS_KEY || 'secretWord',
     REFRESH_KEY: process.env.SECRET_REFRESH_KEY || 'secretRefreshWord',
@@ -21,5 +26,5 @@ module.exports = {
     S3_BUCKET_REGION: process.env.S3_BUCKET_REGION,
     S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
     S3_SECRET_KEY: process.env.S3_SECRET_KEY,
-    S3_BUCKET_URL: process.env.S3_BUCKET_URL,
+    S3_BUCKET_URL: process.env.S3_BUCKET_URL
 }

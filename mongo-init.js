@@ -1,0 +1,12 @@
+db.createUser(
+    {
+        user:'funkypotato',
+        pwd:'funkypotato',
+        roles:[
+            {
+                role:'readWrite',
+                db:'test',
+            }
+        ]
+    }
+)

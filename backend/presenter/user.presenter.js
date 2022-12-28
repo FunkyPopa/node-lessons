@@ -3,8 +3,9 @@ const normalize = (user) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
         fullName: user.fullName,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
     }
 };
 

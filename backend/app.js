@@ -73,9 +73,34 @@ app.use((err, req, res, next ) => {
     res.status(err.status || 500).json(err.message);
 });
 
-server.listen(configs.PORT, async () => {
+
+const connection = async () => {
     mongoose.set("strictQuery", false);
-    await mongoose.connect(configs.MONGO_URL);
-    console.log(`Server listen ${configs.PORT}`);
-    cronRunner();
-});
+    let dbCan = false;
+    console.log('Connecting to database...');
+
+    while (!dbCan) {
+        try {
+            await mongoose.connect(configs.MONGO_URL);
+            dbCan = true;
+            console.log('Database available');
+        } catch (e) {
+            console.log('Database unavailable, wait 3 seconds');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        }
+    }
+}
+
+const start = async () => {
+    try {
+        await connection();
+        server.listen(configs.PORT, configs.HOST)
+        console.log(`Server listen ${configs.PORT} port`);
+        await cronRunner();
+
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+start();
