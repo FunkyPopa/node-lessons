@@ -46,29 +46,8 @@ module.exports = {
           next(e);
       }
     },
-
-    checkIsBodyValid: async (req, res, next) => {
-        try {
-            const {name, email, password} = req.body;
-
-            if(!name || typeof name !== 'string' || name.length < 2) {
-                throw new CustomError('Name is invalid', 400);
-            }
-
-            if(!email || typeof email !== 'string' || !email.includes("@")) {
-                throw new CustomError('Email is invalid', 400);
-            }
-
-            if(!password || typeof password !== 'string' || password.length < 6) {
-                throw new CustomError('Password is invalid', 400);
-            }
-
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
+   
+   
     isEditUserValid: async (req, res, next) => {
       try {
 
